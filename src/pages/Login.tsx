@@ -193,11 +193,6 @@ const Login = () => {
             </p>
           </div>
         </div>
-
-        {/* Demo Credentials Note */}
-        <div className="mt-4 text-center text-sm text-foreground/60">
-          <p>Demo: demo@company.com / demo123</p>
-        </div>
       </div>
     </div>
   );
