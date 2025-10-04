@@ -3,8 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, Lock, Eye, EyeOff, User, Building2, Loader2 } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, User, Building2, Loader2, Globe } from "lucide-react";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { countries } from "@/lib/countries";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -14,6 +22,8 @@ const Signup = () => {
   const [formData, setFormData] = useState({
     name: "",
     company: "",
+    country: "",
+    currency: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -21,15 +31,29 @@ const Signup = () => {
   const [errors, setErrors] = useState({
     name: "",
     company: "",
+    country: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
 
+  const handleCountryChange = (countryCode: string) => {
+    const selectedCountry = countries.find((c) => c.code === countryCode);
+    if (selectedCountry) {
+      setFormData({
+        ...formData,
+        country: countryCode,
+        currency: `${selectedCountry.currency} (${selectedCountry.currencySymbol})`,
+      });
+      setErrors({ ...errors, country: "" });
+    }
+  };
+
   const validateForm = () => {
     const newErrors = {
       name: !formData.name ? "Name is required" : "",
       company: !formData.company ? "Company name is required" : "",
+      country: !formData.country ? "Country is required" : "",
       email: !formData.email
         ? "Email is required"
         : !formData.email.includes("@")
@@ -124,6 +148,34 @@ const Signup = () => {
                 />
               </div>
               {errors.company && <p className="text-sm text-destructive">{errors.company}</p>}
+            </div>
+
+            {/* Country */}
+            <div className="space-y-2">
+              <Label htmlFor="country" className="text-secondary font-medium">
+                Country
+              </Label>
+              <div className="relative">
+                <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
+                <Select value={formData.country} onValueChange={handleCountryChange}>
+                  <SelectTrigger className="pl-10 h-12 bg-input border-border focus:ring-2 focus:ring-primary">
+                    <SelectValue placeholder="Select your country" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    {countries.map((country) => (
+                      <SelectItem key={country.code} value={country.code}>
+                        {country.name} - {country.currency} ({country.currencySymbol})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              {errors.country && <p className="text-sm text-destructive">{errors.country}</p>}
+              {formData.currency && (
+                <p className="text-sm text-muted-foreground">
+                  Base Currency: <span className="font-medium text-secondary">{formData.currency}</span>
+                </p>
+              )}
             </div>
 
             {/* Email */}

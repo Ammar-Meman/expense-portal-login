@@ -55,12 +55,12 @@ const Login = () => {
     
     setTimeout(() => {
       setIsLoading(false);
-      // Simulate failed login for demo
-      if (formData.email !== "demo@company.com" || formData.password !== "demo123") {
+      // Accept any valid email and password (length >= 6)
+      if (formData.password.length < 6) {
         setErrors({
           email: "",
-          password: "",
-          general: "Invalid email or password. Please try again.",
+          password: "Password must be at least 6 characters",
+          general: "",
         });
         toast.error("Login failed. Please check your credentials.");
       } else {
